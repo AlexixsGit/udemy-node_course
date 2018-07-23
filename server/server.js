@@ -1,38 +1,24 @@
 require('./config/config');
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const app = express();
-
 const port = process.env.PORT;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(require('./routes/user'));
 
-app.get('/user', (req, res) => {
-    res.json("getUser");
+mongoose.connect('mongodb://localhost:27017/coffee', { useNewUrlParser: true });
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error'));
+db.once('open', () => {
+    console.log('we are connected');
 });
-
-app.put('/user/:id', (req, res) => {
-
-    let id = req.params.id;
-
-    res.json({ id });
-});
-
-app.post('/user', (req, res) => {
-    let body = req.body;
-
-    if (!body.name) {
-        res.status(400).json({
-            ok: false,
-            description: "Name is required"
-        });
-    } else {
-        res.json(body);
-    }
-})
 
 app.listen(port, () => {
     console.log("Listening on port " + port);
 })
+
