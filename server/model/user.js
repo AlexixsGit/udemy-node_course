@@ -24,7 +24,8 @@ let UserSchema = new Schema({
     },
     status: {
         type: Boolean
-    }, google: {
+    },
+    google: {
         type: Boolean
     }
 });

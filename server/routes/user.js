@@ -1,4 +1,5 @@
 const express = require('express');
+const User = require('../model/user');
 
 const app = express();
 
@@ -16,14 +17,27 @@ app.put('/user/:id', (req, res) => {
 app.post('/user', (req, res) => {
     let body = req.body;
 
-    if (!body.name) {
-        res.status(400).json({
-            ok: false,
-            description: "Name is required"
-        });
-    } else {
-        res.json(body);
-    }
+    let user = new User({
+        name: body.name,
+        email: body.email,
+        password: body.password,
+        role: body.role
+    });
+
+    user.save((err, userDb) => {
+
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err
+            });
+        }
+
+        res.json({
+            ok: true,
+            user: userDb
+        })
+    });
 })
 
 module.exports = app;
