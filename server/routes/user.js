@@ -11,8 +11,22 @@ app.get('/user', (req, res) => {
 app.put('/user/:id', (req, res) => {
 
     let id = req.params.id;
+    let body = req.body;
 
-    res.json({ id });
+    User.findByIdAndUpdate(id, body, { new: true }, (err, userDb) => {
+
+        if (err) {
+            return res.status(400).json({
+                ok: true,
+                err
+            });
+        }
+
+        res.json({
+            ok: true,
+            user: userDb
+        })
+    })
 });
 
 app.post('/user', (req, res) => {
@@ -21,7 +35,7 @@ app.post('/user', (req, res) => {
     let user = new User({
         name: body.name,
         email: body.email,
-        password: bcrypt.hashSync(body.password,10),
+        password: bcrypt.hashSync(body.password, 10),
         role: body.role
     });
 
